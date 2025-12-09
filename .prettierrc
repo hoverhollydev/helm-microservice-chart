@@ -1,0 +1,25 @@
+{
+    "overrides": [
+        {
+            "files": [
+                "*.yaml",
+                "*.yml"
+            ],
+            "options": {
+                "parser": "yaml",
+                "bracketSpacing": false
+            }
+        },
+        {
+            "files": [
+                "templates/**/*.yaml",
+                "templates/**/*.yml"
+            ],
+            "options": {
+                "parser": "yaml",
+                "bracketSpacing": false,
+                "proseWrap": "preserve"
+            }
+        }
+    ]
+}
