@@ -1,62 +1,47 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{.Values.name}}
-  namespace: {{.Values.namespace}}
+  name: {{ .Values.name }}
+  namespace: {{ .Values.namespace }}
   labels:
-    app: {{.Values.name}}
-    areanegocio: pagos
+    app: {{ .Values.name }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{.Values.name}}
+      app: {{ .Values.name }}
   template:
     metadata:
       labels:
-        app: {{.Values.name}}
+        app: {{ .Values.name }}
     spec:
       containers:
-        - name: {{.Values.name}}
-          image: edisonpaul4/{{.Values.name}}:{{.Values.imageTag}}
+        - name: {{ .Values.name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - containerPort: 3000
+            - containerPort: {{ .Values.service.targetPort }}
           resources:
-            requests:
-              cpu: "100m"
-              memory: "256Mi"
-            limits:
-              cpu: "300m"
-              memory: "512Mi"
+{{ toYaml .Values.resources | indent 12 }}
           startupProbe:
             httpGet:
-              path: /startup
-              port: 3000
-            failureThreshold: 3
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 5
-            initialDelaySeconds: 5
+              path: {{ .Values.probes.startup.path }}
+              port: {{ .Values.service.targetPort }}
+            initialDelaySeconds: {{ .Values.probes.startup.initialDelaySeconds }}
           livenessProbe:
             httpGet:
-              path: /liveness
-              port: 3000
-            failureThreshold: 3
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 5
-            initialDelaySeconds: 5
+              path: {{ .Values.probes.liveness.path }}
+              port: {{ .Values.service.targetPort }}
+            initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds }}
           readinessProbe:
             httpGet:
-              path: /readiness
-              port: 3000
-            failureThreshold: 3
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 5
-            initialDelaySeconds: 5
+              path: {{ .Values.probes.readiness.path }}
+              port: {{ .Values.service.targetPort }}
+            initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds }}
           envFrom:
             - configMapRef:
-                name: {{.Values.name}}
+                name: {{ .Values.name }}
+{{- if .Values.secret.enabled }}
             - secretRef:
-                name: {{.Values.name}}
+                name: {{ .Values.name }}
+{{- end }}

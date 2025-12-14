@@ -1,0 +1,10 @@
+{{- if .Values.regulatorio.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.name }}-regulatorio
+  namespace: {{ .Values.namespace }}
+data:
+  LOG_LEVEL: "{{ .Values.regulatorio.LOG_LEVEL }}"
+{{- end }}
+
