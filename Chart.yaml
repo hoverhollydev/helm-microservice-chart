@@ -1,7 +1,6 @@
 apiVersion: v2
-name: help-microservice-chart
+name: helm-microservice-chart
 description: Helm chart genérico para microservicios en OpenShift / Kubernetes
 type: application
-version: 1.0.0
-appVersion: "1.0.0"
-
+version: 0.1.0
+appVersion: "1.16.0"
